@@ -1,6 +1,6 @@
 ![PPFL](ppfl_logo.png)
 
-学习记录
+> 一边读代码一边写注释，菜鸡的学习记录。
 
 This is an application that runs privacy-preserving federated learning with Trusted Execution Environments. A layer-wise training technique is used for keeping the training layers always inside trusted areas. The application has two parts: 1) the server side with SGX using [OpenEnclave SDK](https://github.com/openenclave/openenclave) for secure aggregation; 2) the client-side with TrustZone using [OP-TEE](https://www.op-tee.org/).
 
