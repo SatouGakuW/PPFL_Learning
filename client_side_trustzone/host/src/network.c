@@ -494,6 +494,7 @@ float train_network(network *net, data d)
 {
     assert(d.X.rows % net->batch == 0);
     int batch = net->batch;
+    //有几个batch，d是根据max_batch重新生成的（感觉是），这个跟pytroch把整个数据集分成几个batch加载，然后按照epoch数训练的思路不一样。darknet是根据总共走几个batch然后加载数据的。
     int n = d.X.rows / batch;
 
     int i;
