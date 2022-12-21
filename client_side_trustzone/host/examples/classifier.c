@@ -111,7 +111,7 @@ void train_classifier(char *datacfg, char *cfgfile, char *weightfile_o, int *gpu
 #ifdef GPU
                 cuda_set_device(gpus[i]);
 #endif
-                nets[i] = load_network(cfgfile, weightfile, clear);
+                nets[i] = load_network(cfgfile, weightfile, clear); // 加载cfg里定义的神经网络以及从server那接收的weightfile，load_network()既加载网络结构也加载权重。
                 nets[i]->learning_rate *= ngpus;
         }
         srand(time(0));
@@ -175,6 +175,7 @@ void train_classifier(char *datacfg, char *cfgfile, char *weightfile_o, int *gpu
         int epoch = (*net->seen)/N;
 
         // output file
+        //如何命名日志文件
         struct stat st = {0};
         if (stat("/media/results", &st) == -1) {
                 mkdir("/media/results", 0700);
@@ -203,6 +204,7 @@ void train_classifier(char *datacfg, char *cfgfile, char *weightfile_o, int *gpu
         FILE *output_file = fopen(output_dir, "w");
 
         // additional train
+        //为什么要additional train
         printf("current_batch=%d \n", get_current_batch(net));
         if(get_current_batch(net) >= net->max_batches) {
                 net->max_batches = get_current_batch(net) + net->max_batches;
@@ -257,14 +259,14 @@ void train_classifier(char *datacfg, char *cfgfile, char *weightfile_o, int *gpu
                         loss = train_networks(nets, ngpus, train, 4);
                 }
 #else
-                loss = train_network(net, train);
+                loss = train_network(net, train); // 训练入口
 #endif
                 if(avg_loss == -1) avg_loss = loss;
                 avg_loss = avg_loss*.9 + loss*.1;
                 printf("%ld, %.3f: %f, %f avg, %f rate, %lf seconds, %ld images\n", get_current_batch(net), (float)(*net->seen)/N, loss, avg_loss, get_current_rate(net), what_time_is_it_now()-time, *net->seen);
                 fprintf(output_file, "%ld, %.3f: %f, %f avg, %f rate, %lf seconds, %ld images\n", get_current_batch(net), (float)(*net->seen)/N, loss, avg_loss, get_current_rate(net), what_time_is_it_now()-time, *net->seen);
 
-
+                // 这一段都是实验相关的一些统计量
                 getrusage(RUSAGE_SELF, &usage);
                 endu = usage.ru_utime;
                 ends = usage.ru_stime;
