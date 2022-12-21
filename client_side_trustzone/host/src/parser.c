@@ -833,7 +833,7 @@ network *parse_network_cfg(char *filename)
     list *sections = read_cfg(filename);
     node *n = sections->front;
     if(!n) error("Config file has no sections");
-    network *net = make_network(sections->size - 1);
+    network *net = make_network(sections->size - 1); //由于cfg中第一个 [] 是 [nets] ，不是神经网络具体的层，因此计算这个神经网络有几层的时候需要减1.
 
     net->gpu_index = gpu_index;
     size_params params;
